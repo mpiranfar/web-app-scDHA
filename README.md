@@ -2,11 +2,11 @@
 This is a Shiny web application that performs single-cell RNA-seq data analysis using the scDHA package.
 
 ## How to Run the App
-1. Make sure you have R and Torch package and libtorch library installed on your computer.
-libtorch can be installed using: torch::install_torch()
+1. Make sure you have R and the scDHA package installed on your computer.
+To see how to install the scDHA package see: https://github.com/duct317/scDHA
 
-2. Install the required R packages by running the following in RStudio:
-   install.packages(c("scDHA", "shiny", "ggplot2", "httr", "DT", "mclust", "viridis"))
+2. Install the other required R packages by running the following in RStudio:
+   install.packages(c("shiny", "ggplot2", "httr", "DT", "mclust", "viridis"))
 
 3. Open the web-app.R file in RStudio.
 
@@ -30,8 +30,10 @@ libtorch can be installed using: torch::install_torch()
 # Built-in Datasets
 The app provides the following built-in datasets:
 
-Yan Data
-Goolam Data
-Deng Data
+"*" Yan Data
+
+"*" Goolam Data
+
+"*" Deng Data
 
 Note: Some datasets may not be currently available.

@@ -30,10 +30,10 @@ To see how to install the scDHA package see: https://github.com/duct317/scDHA
 # Built-in Datasets
 The app provides the following built-in datasets:
 
-"*" Yan Data
+* Yan Data
 
-"*" Goolam Data
+* Goolam Data
 
-"*" Deng Data
+* Deng Data
 
 Note: Some datasets may not be currently available.

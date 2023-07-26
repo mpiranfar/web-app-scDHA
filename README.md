@@ -7,7 +7,7 @@ To see how to install the scDHA package see: https://github.com/duct317/scDHA
 
 2. Install the other required R packages by running the following in RStudio:
 
-install.packages(c("shiny", "ggplot2", "httr", "DT", "mclust", "viridis"))
+      install.packages(c("shiny", "ggplot2", "httr", "DT", "mclust", "viridis"))
    
 3. Open the web-app.R file in RStudio.
 

@@ -14,7 +14,7 @@ data_analysis <- function(data_object) {
   
   data <- log2(data + 1)
   
-  result <- scDHA(data)
+  result <- scDHA(data, ncores = 2, seed = 1)
   
   cluster <- result$cluster
   
@@ -57,7 +57,7 @@ generate_scatter_plot <- function(data_plot, cell_colors) {
     # If cell_type is NULL, color the points by pseudotime
     ggplot(data_plot, aes(x = data_plot$x, y = data_plot$y, color = data_plot$y)) +
       geom_point() +
-      scale_color_viridis_c() +  # Using the "viridis" color palette, you can change this to any color palette you prefer
+      scale_color_viridis_c() + 
       labs(title = "Scatter Plot of Cell Representation",
            x = "Sample Cells",
            y = "Pseudo Time",
@@ -88,10 +88,7 @@ ui <- fluidPage(
                     choices = c("Yan Data", "Goolam Data", "Deng Data"))
       ),
       
-      actionButton("submit", "Submit"),
-      # UI elements for plot customization
-      numericInput("plotWidth", "Plot Width (pixels):", value = 800),
-      numericInput("plotHeight", "Plot Height (pixels):", value = 600)
+      actionButton("submit", "Submit")
       
     ),
     
@@ -160,8 +157,11 @@ server <- function(input, output) {
         
         # Fetch online data based on the selected data source
         if (selectedData == "Yan Data") {
+          
           output$unavailable_message <- renderUI({
+            
             tags$p("Unfortunately, this dataset is currently unavailable.")
+            
           })
           return(NULL)
         } else if (selectedData == "Goolam Data") {
@@ -192,12 +192,17 @@ server <- function(input, output) {
         }
         
       } else if (selectedData == "Deng Data") {
+        
         output$unavailable_message <- renderUI({
+          
           tags$p("Unfortunately, this dataset is currently unavailable.")
+          
         })
+        
         return(NULL)
       } 
     } else {
+      
       return(NULL)
       "Please select an option."
     }
@@ -205,7 +210,9 @@ server <- function(input, output) {
   
   # Render the table in the UI based on data
   output$my_table <- renderTable({
+    
     data_reunion<- data_result()
+    
     if (!is.null(data_reunion)) {
       data <- data_reunion$data
       result <- data_reunion$result
@@ -221,24 +228,30 @@ server <- function(input, output) {
       }
       
       return(table_data)
+      
     } else {
+      
       # Return an empty data frame if data is NULL
       return(data.frame())
     }
   })
   # Define the download handler
   output$download3 <- downloadHandler(
+    
     # Specify the file name
     filename = function() {
       "table_data.tsv"
     },
+    
     # Specify the file content
     content = function(file) {
       save_table <- data_result()
+      
       # Create the table with cell ID and pseudotime columns
       table_data <- data.frame(Cell_ID = rownames(save_table$data), Pseudo_Time = save_table$result$pt)
       
       if (nrow(table_data) > 0 && !is.null(save_table$label)) {
+        
         # If metadata exists, add cell type column to the table
         cell_types <- as.character(save_table$label)
         table_data$Cell_Type <- cell_types  # Insert the cell type column
@@ -247,15 +260,19 @@ server <- function(input, output) {
       write.table(table_data, file, sep = "\t", row.names = FALSE)
     }
   )
+  
   # Download button2 event handler
   output$download2 <- downloadHandler(
+    
     # Specify the file name
     filename = function() {
       "latent_space.tsv"
     },
+    
     # Specify the file content
     content = function(file) {
       save_latent <- data_result()
+      
       # Write the data frame to the file in TSV format
       write.table(save_latent$result$latent, file, sep = "\t", row.names = FALSE)
     }
@@ -263,7 +280,9 @@ server <- function(input, output) {
   
   # Create a scatter plot based on result
   output$scatter_plot <- renderPlot({
+    
     data_reunion <- data_result()
+    
     if (!is.null(data_reunion)) {
       result <- data_reunion$result
       data <- data_reunion$data
@@ -273,6 +292,7 @@ server <- function(input, output) {
       data_plot <- data.frame(
         x = data[, 1],
         y = result$pt,
+        
         #cell_type = sample(c(unique(label)), nrow(data), replace = TRUE),
         pseudo_time = runif(nrow(data), min = 0, max = 5)
       )
@@ -280,7 +300,7 @@ server <- function(input, output) {
       # If metadata exists, color the plot by cell type and add a legend
       if (!is.null(label)) {
         
-        # Assuming your actual dataset has a "label" containing the correct cell types
+        # Assuming the actual dataset has a "label" containing the correct cell types
         data_plot$cell_type <- factor(label, levels = c(unique(label)))
         
         # Define colors for each cell type
@@ -299,8 +319,10 @@ server <- function(input, output) {
       "plot.png"
     },
     content = function (file) {
+      
       # Generate the data_plot and cell_colors based on the data_result()
       data_reunion <- data_result()
+      
       if (!is.null(data_reunion)) {
         result <- data_reunion$result
         data <- data_reunion$data
@@ -315,6 +337,7 @@ server <- function(input, output) {
         if (!is.null(label)) {
           data_plot$cell_type <- factor(label, levels = c(unique(label)))
           cell_colors <- c(rainbow(unique(data)))
+          
         } else {
           cell_colors <- NULL
         }
